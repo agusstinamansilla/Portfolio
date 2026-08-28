@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0c0e11;
+  --surface: #14171c;
+  --surface-2: #191d23;
+  --hairline: #262b33;
+  --hairline-soft: #1d2128;
+  --text: #eae6dd;
+  --text-muted: #8b8f98;
+  --text-faint: #565b64;
+  --accent: #c6a15c;
+  --accent-bright: #e6c584;
+  --positive: #7fa98d;
+  --negative: #c17b6e;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-hairline: var(--hairline);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  background-image:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(198, 161, 92, 0.07), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(198, 161, 92, 0.04), transparent 55%);
+  background-attachment: fixed;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: rgba(198, 161, 92, 0.28);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in {
+    animation: fadeIn 0.5s ease-out both;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
