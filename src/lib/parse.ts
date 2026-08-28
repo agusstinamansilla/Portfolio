@@ -256,6 +256,12 @@ export function parseTotalCuenta(grid: Grid, warnings: string[]): {
     warnings.push('No encontre la seccion "POSICION ACTUAL" en Total cuenta.');
   }
 
+  // Compute this before "resultados" so "Primer semestre" can fall back to it
+  // below — the persona table's "Total" row already holds the exact same
+  // valor inicio / fin / ganancia as the primer semestre summary.
+  const personasPrimerSemestre = parsePersonasBreakdown(grid, warnings);
+  const totalPersonas = personasPrimerSemestre.find((p) => p.persona === "Total") ?? null;
+
   const resultados: ResultadoPeriodo[] = [];
   const labels = [
     { needle: "resultado primer semestre", label: "Primer semestre" },
@@ -265,17 +271,25 @@ export function parseTotalCuenta(grid: Grid, warnings: string[]): {
   let cursor = posicionRow !== -1 ? posicionRow : 0;
   for (const { needle, label } of labels) {
     const row = findRow(grid, [needle], cursor);
+    let block: ResultadoPeriodo | null = null;
     if (row !== -1) {
-      const block = parseResultadoBlock(grid, row, label);
-      resultados.push(block ?? { label, valorInicio: null, valorFin: null, ganancia: null, variacion: null });
+      block = parseResultadoBlock(grid, row, label);
       cursor = row + 1;
-    } else {
-      warnings.push(`No encontre la seccion "${label}" en Total cuenta.`);
-      resultados.push({ label, valorInicio: null, valorFin: null, ganancia: null, variacion: null });
     }
+    if (!block && label === "Primer semestre" && totalPersonas) {
+      // No "RESULTADO PRIMER SEMESTRE" title found by itself — use the Total
+      // column of the Jeremías/Fran breakdown instead, same numbers.
+      block = {
+        label,
+        valorInicio: totalPersonas.valorInicio,
+        valorFin: totalPersonas.valorFin,
+        ganancia: totalPersonas.ganancia,
+        variacion: totalPersonas.variacion,
+      };
+    }
+    if (!block) warnings.push(`No encontre la seccion "${label}" en Total cuenta.`);
+    resultados.push(block ?? { label, valorInicio: null, valorFin: null, ganancia: null, variacion: null });
   }
-
-  const personasPrimerSemestre = parsePersonasBreakdown(grid, warnings);
 
   return { acciones, etfs, resumen: { activos, efectivo, pctEfectivo, total, tasaEfectivo }, resultados, personasPrimerSemestre };
 }
