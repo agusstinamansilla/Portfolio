@@ -133,9 +133,9 @@ function parseResultadoBlock(grid: Grid, startRow: number, label: string): Resul
     const row = grid[r] ?? [];
     const rowKey = row.map(normKey).join(" | ");
     const numsInRow = row.map(toNumber).filter((n): n is number => n !== null);
-    if (rowKey.includes("valor al inicio") || rowKey.includes("valor al inciar")) {
+    if (rowKey.includes("valor") && (rowKey.includes("inicio") || rowKey.includes("inciar") || rowKey.includes("iniciar"))) {
       valorInicio = numsInRow[0] ?? valorInicio;
-    } else if (rowKey.includes("fin de primer") || rowKey.includes("valor actual")) {
+    } else if (rowKey.includes("fin de primer") || (rowKey.includes("valor") && rowKey.includes("actual"))) {
       valorFin = numsInRow[0] ?? valorFin;
     } else if (rowKey.includes("ganancia")) {
       ganancia = numsInRow[0] ?? ganancia;
@@ -267,8 +267,11 @@ export function parseTotalCuenta(grid: Grid, warnings: string[]): {
     const row = findRow(grid, [needle], cursor);
     if (row !== -1) {
       const block = parseResultadoBlock(grid, row, label);
-      if (block) resultados.push(block);
+      resultados.push(block ?? { label, valorInicio: null, valorFin: null, ganancia: null, variacion: null });
       cursor = row + 1;
+    } else {
+      warnings.push(`No encontre la seccion "${label}" en Total cuenta.`);
+      resultados.push({ label, valorInicio: null, valorFin: null, ganancia: null, variacion: null });
     }
   }
 

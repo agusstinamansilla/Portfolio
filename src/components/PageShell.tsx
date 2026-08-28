@@ -42,7 +42,7 @@ function Masthead({ updatedAt, total }: { updatedAt?: string; total: number | nu
           <span className="text-xs text-text-faint font-mono hidden sm:inline">Actualizado {fmtDateTime(updatedAt)}</span>
         )}
       </div>
-      <h1 className="font-display italic text-[2.5rem] sm:text-[3.4rem] leading-[1.05] text-text">
+      <h1 className="font-display italic text-[2.9rem] sm:text-[4rem] leading-[1.05] text-text">
         {total !== null ? fmtUsd(total) : "—"}
       </h1>
       <p className="text-text-muted text-sm mt-2">Valor total de la cartera al día de hoy</p>

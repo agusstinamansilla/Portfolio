@@ -16,7 +16,7 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
 
       {/* Desktop table */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-[0.925rem]">
           <thead>
             <tr className="text-text-faint text-[0.7rem] uppercase tracking-[0.12em]">
               <th className="text-left font-medium py-2.5 pr-3">Activo</th>
@@ -47,9 +47,9 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
                 <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtNum(h.cantidad, h.cantidad % 1 ? 2 : 0)}</td>
                 <td className="text-right py-3 px-3 font-mono tabular">{fmtUsd(h.precioActual, { decimals: 2 })}</td>
                 <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtUsd(h.precioCompra, { decimals: 2 })}</td>
-                <td className="text-right py-3 px-3 font-mono tabular font-medium">{fmtUsd(h.valorActual)}</td>
+                <td className="text-right py-3 px-3 font-mono tabular font-medium text-base">{fmtUsd(h.valorActual)}</td>
                 <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtUsd(h.valorCompra)}</td>
-                <td className={`text-right py-3 px-3 font-mono tabular ${h.ganancia >= 0 ? "text-positive" : "text-negative"}`}>
+                <td className={`text-right py-3 px-3 font-mono tabular font-medium text-base ${h.ganancia >= 0 ? "text-positive" : "text-negative"}`}>
                   {h.ganancia >= 0 ? "+" : ""}
                   {fmtUsd(h.ganancia)}
                 </td>
@@ -77,12 +77,12 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
       </div>
 
       {/* Mobile stacked cards */}
-      <div className="md:hidden divide-y divide-hairline-soft">
+      <div className="md:hidden divide-y divide-hairline-soft text-[0.95rem]">
         {holdings.map((h, i) => (
           <div key={`${h.simbolo}-${i}`} className="py-3">
             <div className="flex items-baseline justify-between">
-              <span className="font-mono text-accent-bright text-[0.85rem]">{h.simbolo}</span>
-              <span className="font-mono tabular font-medium">{fmtUsd(h.valorActual)}</span>
+              <span className="font-mono text-accent-bright text-base">{h.simbolo}</span>
+              <span className="font-mono tabular font-medium text-base">{fmtUsd(h.valorActual)}</span>
             </div>
             <div className="text-text-muted text-xs mt-0.5">{h.empresa}</div>
             <div className="flex items-baseline justify-between mt-1.5 text-xs">
