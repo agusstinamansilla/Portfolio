@@ -22,7 +22,7 @@ const totalCuenta: (string | number | null)[][] = [
   ["TXN", "Texas Instruments Inc", 100, 259.02, 180, 25902, 18000, 7902, 0.439, 0.0123],
   ["VIST", "Vista Oil & Gas", 849, 69.96, 63, 59396.04, 53487, 5909.04, 0.1105, 0.0282],
   ["UBER", "UBER TECHNOLOGIE", 550, 78.9, 72, 43395, 39688, 3707, 0.0934, 0.0206],
-  [],
+  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 32000, 15000, 75000],
   ["ETFs - 12,89%"],
   ["Símbolo", "Empresa", "Cantidad", "Precio Actual", "Precio Promedio Compra", "Valor Total", "Valor Compra", "Ganancia/Pérdida (USD)"],
   ["EWZ", "iShares MSCI Brazil ETF", 1000, 36, 30, 35510, 30000, 5510, 0.1837, 0.0169],

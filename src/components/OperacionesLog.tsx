@@ -7,7 +7,7 @@ export function OperacionesLog({ operaciones }: { operaciones: Operacion[] }) {
   return (
     <section className="mb-14">
       <div className="flex items-baseline justify-between border-b border-hairline pb-3 mb-1">
-        <h2 className="font-display text-[1.4rem] tracking-tight text-text">Movimientos</h2>
+        <h2 className="font-display text-[1.4rem] tracking-tight text-text">Operaciones</h2>
         <span className="text-xs text-text-faint uppercase tracking-[0.14em]">últimos {operaciones.length}</span>
       </div>
       <div className="divide-y divide-hairline-soft">

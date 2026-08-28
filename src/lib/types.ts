@@ -24,6 +24,7 @@ export type Resumen = {
   activos: number | null;
   efectivo: number | null;
   pctEfectivo: number | null;
+  tasaEfectivo: string | null; // e.g. "4%" — the stated remuneration rate, pulled from the label text
   total: number | null;
 };
 
@@ -36,12 +37,21 @@ export type Operacion = {
   total: number;
 };
 
+export type PersonaResultado = {
+  persona: string;
+  valorInicio: number | null;
+  valorFin: number | null;
+  ganancia: number | null;
+  variacion: number | null; // fraction
+};
+
 export type PortfolioData = {
   updatedAt: string;
   acciones: Holding[];
   etfs: Holding[];
   resumen: Resumen;
   resultados: ResultadoPeriodo[];
+  personasPrimerSemestre: PersonaResultado[];
   operaciones: Operacion[];
   warnings: string[];
 };

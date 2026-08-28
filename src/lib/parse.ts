@@ -1,4 +1,4 @@
-import { Holding, Operacion, PortfolioData, ResultadoPeriodo, Resumen } from "./types";
+import { Holding, Operacion, PersonaResultado, PortfolioData, ResultadoPeriodo, Resumen } from "./types";
 
 type Cell = string | number | null | undefined;
 type Grid = Cell[][];
@@ -48,6 +48,14 @@ function findCol(row: Cell[], keys: string[]): number {
   return -1;
 }
 
+function isRowEmptyInWindow(row: Cell[] | undefined, maxCol: number): boolean {
+  if (!row) return true;
+  for (let c = 0; c <= maxCol && c < row.length; c++) {
+    if (norm(row[c]) !== "") return false;
+  }
+  return true;
+}
+
 function isRowEmpty(row: Cell[] | undefined): boolean {
   if (!row) return true;
   return row.every((c) => norm(c) === "");
@@ -79,11 +87,16 @@ function parseHoldingsBlock(grid: Grid, headerRow: number, warnings: string[], l
     return [];
   }
 
+  // Only look at the columns this block actually uses to decide "end of table" —
+  // stray numbers Agus keeps in far-right scratch columns (e.g. col U/V/W) must
+  // not be mistaken for part of this block and swallow the next one.
+  const maxCol = Math.max(...Object.values(col).filter((v) => v !== -1));
+
   const out: Holding[] = [];
   for (let r = headerRow + 1; r < grid.length; r++) {
     const row = grid[r] ?? [];
     const simbolo = norm(row[col.simbolo]);
-    if (isRowEmpty(row)) break; // end of block
+    if (isRowEmptyInWindow(row, maxCol)) break; // end of block
     if (!simbolo) continue;
 
     const valorActual = (col.valorActual !== -1 ? toNumber(row[col.valorActual]) : null) ?? 0;
@@ -135,11 +148,73 @@ function parseResultadoBlock(grid: Grid, startRow: number, label: string): Resul
   return { label, valorInicio, valorFin, ganancia, variacion };
 }
 
+function normalizePersonaLabel(text: string): string {
+  const k = normKey(text);
+  if (k.includes("total")) return "Total";
+  return text.trim().replace(/^./, (c) => c.toUpperCase());
+}
+
+/**
+ * Reads the Jeremías/Fran/Total breakdown next to "RESULTADO PRIMER SEMESTRE"
+ * (around I:K on the sheet). Rather than trusting that column position stays
+ * put — merged title cells upstream can shift where data lands — this takes
+ * the LAST N numbers on each row (N = number of named columns in the header),
+ * since those trailing values are always Jeremías / Fran / Total in that order.
+ */
+function parsePersonasBreakdown(grid: Grid, warnings: string[]): PersonaResultado[] {
+  const headerRow = findRow(grid, ["jeremias"], 0, 26);
+  if (headerRow === -1) return [];
+
+  const header = grid[headerRow] ?? [];
+  const labels: string[] = [];
+  for (let c = 0; c < header.length; c++) {
+    const text = norm(header[c]);
+    if (text) labels.push(normalizePersonaLabel(text));
+  }
+  if (labels.length === 0) {
+    warnings.push('Encontre "Jeremias" pero no pude leer las columnas de esa tabla.');
+    return [];
+  }
+
+  let valorInicio: (number | null)[] = [];
+  let valorFin: (number | null)[] = [];
+  let ganancia: (number | null)[] = [];
+
+  for (let r = headerRow + 1; r < Math.min(headerRow + 6, grid.length); r++) {
+    const row = grid[r] ?? [];
+    const rowKey = row.map(normKey).join(" | ");
+    const nums = row.map(toNumber).filter((n): n is number => n !== null);
+    const lastN = nums.slice(-labels.length);
+    if (rowKey.includes("valor al inicio") || rowKey.includes("valor al inciar")) {
+      valorInicio = lastN;
+    } else if (rowKey.includes("fin de primer")) {
+      valorFin = lastN;
+    } else if (rowKey.includes("ganancia")) {
+      ganancia = lastN;
+      break;
+    }
+  }
+
+  return labels.map((persona, i) => {
+    const vi = valorInicio[i] ?? null;
+    const vf = valorFin[i] ?? null;
+    const g = ganancia[i] ?? null;
+    return {
+      persona,
+      valorInicio: vi,
+      valorFin: vf,
+      ganancia: g,
+      variacion: vi ? (g ?? 0) / vi : null,
+    };
+  });
+}
+
 export function parseTotalCuenta(grid: Grid, warnings: string[]): {
   acciones: Holding[];
   etfs: Holding[];
   resumen: Resumen;
   resultados: ResultadoPeriodo[];
+  personasPrimerSemestre: PersonaResultado[];
 } {
   const accionesHeader = findRow(grid, ["simbolo"], 0);
   const acciones = accionesHeader !== -1 ? parseHoldingsBlock(grid, accionesHeader, warnings, "ACCIONES") : [];
@@ -152,6 +227,7 @@ export function parseTotalCuenta(grid: Grid, warnings: string[]): {
   let efectivo: number | null = null;
   let pctEfectivo: number | null = null;
   let total: number | null = null;
+  let tasaEfectivo: string | null = null;
 
   if (posicionRow !== -1) {
     for (let r = posicionRow; r < Math.min(posicionRow + 4, grid.length); r++) {
@@ -162,6 +238,17 @@ export function parseTotalCuenta(grid: Grid, warnings: string[]): {
       if (rowKey.includes("efectivo")) {
         efectivo = nums[0] ?? efectivo;
         pctEfectivo = nums[1] ?? pctEfectivo;
+        // Pull a literal rate like "al 4%" out of the label text itself (e.g.
+        // "Efectivo remunerado al 4%"), since that's a stated rate, not the
+        // % of the portfolio that pctEfectivo represents.
+        for (const cell of row) {
+          const text = norm(cell);
+          const m = text.match(/(\d+([.,]\d+)?\s?%)/);
+          if (/efectivo/i.test(text) && m) {
+            tasaEfectivo = m[1].replace(/\s/g, "");
+            break;
+          }
+        }
       }
       if (rowKey.includes("total")) total = nums[0] ?? total;
     }
@@ -185,7 +272,9 @@ export function parseTotalCuenta(grid: Grid, warnings: string[]): {
     }
   }
 
-  return { acciones, etfs, resumen: { activos, efectivo, pctEfectivo, total }, resultados };
+  const personasPrimerSemestre = parsePersonasBreakdown(grid, warnings);
+
+  return { acciones, etfs, resumen: { activos, efectivo, pctEfectivo, total, tasaEfectivo }, resultados, personasPrimerSemestre };
 }
 
 export function parseOperaciones(grid: Grid, warnings: string[]): Operacion[] {
@@ -225,7 +314,7 @@ export function parseOperaciones(grid: Grid, warnings: string[]): Operacion[] {
 
 export function buildPortfolioData(totalCuentaGrid: Grid, operacionesGrid: Grid): PortfolioData {
   const warnings: string[] = [];
-  const { acciones, etfs, resumen, resultados } = parseTotalCuenta(totalCuentaGrid, warnings);
+  const { acciones, etfs, resumen, resultados, personasPrimerSemestre } = parseTotalCuenta(totalCuentaGrid, warnings);
   const operaciones = parseOperaciones(operacionesGrid, warnings);
 
   // Fill in % de cartera when the sheet didn't have that column for a block (e.g. ETFs),
@@ -242,6 +331,7 @@ export function buildPortfolioData(totalCuentaGrid: Grid, operacionesGrid: Grid)
     etfs,
     resumen,
     resultados,
+    personasPrimerSemestre,
     operaciones,
     warnings,
   };

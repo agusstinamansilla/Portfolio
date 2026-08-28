@@ -9,7 +9,14 @@ export function SummaryStrip({ resumen, resultados }: { resumen: Resumen; result
         <Stat
           label="Efectivo"
           value={fmtUsd(resumen.efectivo)}
-          sub={resumen.pctEfectivo !== null ? `${fmtPct(resumen.pctEfectivo, 1).replace("+", "")} de la cartera` : undefined}
+          sub={
+            [
+              resumen.pctEfectivo !== null ? `${fmtPct(resumen.pctEfectivo, 1).replace("+", "")} de la cartera` : null,
+              resumen.tasaEfectivo ? `remunerado al ${resumen.tasaEfectivo}` : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || undefined
+          }
         />
         <Stat label="Valor total" value={fmtUsd(resumen.total)} emphasis />
       </div>

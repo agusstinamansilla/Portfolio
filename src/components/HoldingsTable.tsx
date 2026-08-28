@@ -24,6 +24,7 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
               <th className="text-right font-medium py-2.5 px-3">Precio actual</th>
               <th className="text-right font-medium py-2.5 px-3">Precio compra</th>
               <th className="text-right font-medium py-2.5 px-3">Valor actual</th>
+              <th className="text-right font-medium py-2.5 px-3">Valor compra</th>
               <th className="text-right font-medium py-2.5 px-3">Result.</th>
               <th className="text-right font-medium py-2.5 px-3">Var.</th>
               <th className="text-right font-medium py-2.5 pl-3">% cartera</th>
@@ -47,6 +48,7 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
                 <td className="text-right py-3 px-3 font-mono tabular">{fmtUsd(h.precioActual, { decimals: 2 })}</td>
                 <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtUsd(h.precioCompra, { decimals: 2 })}</td>
                 <td className="text-right py-3 px-3 font-mono tabular font-medium">{fmtUsd(h.valorActual)}</td>
+                <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtUsd(h.valorCompra)}</td>
                 <td className={`text-right py-3 px-3 font-mono tabular ${h.ganancia >= 0 ? "text-positive" : "text-negative"}`}>
                   {h.ganancia >= 0 ? "+" : ""}
                   {fmtUsd(h.ganancia)}
@@ -63,6 +65,7 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
               <td className="py-3 pr-3 text-xs uppercase tracking-[0.12em] text-text-faint">Subtotal</td>
               <td colSpan={3}></td>
               <td className="text-right py-3 px-3 font-mono tabular font-medium">{fmtUsd(totalValor)}</td>
+              <td></td>
               <td className={`text-right py-3 px-3 font-mono tabular font-medium ${totalGanancia >= 0 ? "text-positive" : "text-negative"}`}>
                 {totalGanancia >= 0 ? "+" : ""}
                 {fmtUsd(totalGanancia)}
