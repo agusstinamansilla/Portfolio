@@ -7,14 +7,25 @@ actualiza solo (revisa cada 60 segundos).
 ## Cómo funciona
 
 - `src/lib/sheets.ts` llama a la Google Sheets API (`values.get`) para leer
-  las dos hojas.
-- `src/lib/parse.ts` interpreta esas filas/columnas **buscando los títulos**
-  (Símbolo, Activos, Efectivo, RESULTADO..., OPERACIÓN, etc.) en vez de
-  usar números de fila fijos. Esto significa que podés agregar o sacar
-  posiciones, o insertar filas, y el dashboard lo sigue leyendo bien —
-  siempre que no cambies el texto de los encabezados.
-- La página (`src/app/page.tsx`) pide `/api/portfolio` cada 60s y muestra
-  el resultado.
+  tres hojas: **Total cuenta**, **operaciones** y **Var. Hoy**.
+- El parser (`src/lib/parse.ts`) interpreta esas filas/columnas **buscando
+  los títulos** ("Símbolo", "Activos", "Efectivo", "RESULTADO...",
+  "OPERACIÓN", "Precio hoy"...) en vez de usar números de fila fijos. Esto
+  significa que podés agregar o sacar posiciones, o insertar filas, y el
+  dashboard lo sigue leyendo bien — siempre que no cambies el texto de los
+  encabezados.
+- Cada página pide su endpoint correspondiente (`/api/portfolio` o
+  `/api/variaciones-hoy`) cada 60s y muestra el resultado.
+
+### La hoja "Var. Hoy"
+
+Es la que alimenta la pestaña "Variaciones Hoy" del dashboard. Tiene que
+tener la misma estructura que "Total cuenta" (un bloque ACCIONES y un
+bloque ETFs, cada uno con su propia fila de encabezados), con columnas:
+**Símbolo**, **Empresa**, **Precio hoy**, **Precio Ayer**, **Variacion**.
+Se recomienda usar `GOOGLEFINANCE` en esas columnas (por ejemplo
+`=GOOGLEFINANCE(A5,"price")` y `=GOOGLEFINANCE(A5,"closeyest")`) para que
+se actualice sola.
 
 ## 1. Conseguir la API key de Google
 
