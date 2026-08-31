@@ -1,4 +1,4 @@
-import { Holding, Operacion, PersonaResultado, PortfolioData, ResultadoPeriodo, Resumen } from "./types";
+import { Holding, Operacion, PersonaResultado, PortfolioData, ResultadoPeriodo, Resumen, VariacionHoy } from "./types";
 
 type Cell = string | number | null | undefined;
 type Grid = Cell[][];
@@ -327,6 +327,65 @@ export function parseOperaciones(grid: Grid, warnings: string[]): Operacion[] {
   }
   // Most recent first
   return out.reverse();
+}
+
+/**
+ * Reads the "Var. Hoy" sheet: same shape as Total cuenta (an ACCIONES block,
+ * then an ETFs block, each with its own "Símbolo" header row), but with
+ * Símbolo / Empresa / Precio hoy / Precio Ayer / Variación columns.
+ */
+function parseVariacionesBlock(grid: Grid, headerRow: number, warnings: string[], label: string): VariacionHoy[] {
+  const header = grid[headerRow] ?? [];
+  const col = {
+    simbolo: findCol(header, ["simbolo"]),
+    empresa: findCol(header, ["empresa"]),
+    precioHoy: findCol(header, ["precio hoy"]),
+    precioAyer: findCol(header, ["precio ayer"]),
+    variacion: findCol(header, ["variacion"]),
+  };
+
+  if (col.simbolo === -1) {
+    warnings.push(`No encontre la columna "Simbolo" en el bloque ${label} de Var. Hoy (fila ${headerRow + 1}).`);
+    return [];
+  }
+
+  const maxCol = Math.max(...Object.values(col).filter((v) => v !== -1));
+
+  const out: VariacionHoy[] = [];
+  for (let r = headerRow + 1; r < grid.length; r++) {
+    const row = grid[r] ?? [];
+    const simbolo = norm(row[col.simbolo]);
+    if (isRowEmptyInWindow(row, maxCol)) break;
+    if (!simbolo) continue;
+
+    const precioHoy = col.precioHoy !== -1 ? toNumber(row[col.precioHoy]) : null;
+    const precioAyer = col.precioAyer !== -1 ? toNumber(row[col.precioAyer]) : null;
+    const variacionRaw = col.variacion !== -1 ? toNumber(row[col.variacion]) : null;
+    const variacion = variacionRaw ?? (precioAyer && precioHoy !== null ? (precioHoy - precioAyer) / precioAyer : null);
+
+    out.push({
+      simbolo,
+      empresa: col.empresa !== -1 ? norm(row[col.empresa]) : "",
+      precioHoy,
+      precioAyer,
+      variacion,
+    });
+  }
+  return out;
+}
+
+export function parseVariacionesHoy(grid: Grid, warnings: string[]): VariacionHoy[] {
+  const accionesHeader = findRow(grid, ["simbolo"], 0);
+  if (accionesHeader === -1) {
+    warnings.push('No encontre la hoja "Var. Hoy" (falta el encabezado "Simbolo").');
+    return [];
+  }
+  const acciones = parseVariacionesBlock(grid, accionesHeader, warnings, "ACCIONES");
+
+  const etfHeader = findRow(grid, ["simbolo"], accionesHeader + 1);
+  const etfs = etfHeader !== -1 ? parseVariacionesBlock(grid, etfHeader, warnings, "ETFs") : [];
+
+  return [...acciones, ...etfs];
 }
 
 export function buildPortfolioData(totalCuentaGrid: Grid, operacionesGrid: Grid): PortfolioData {

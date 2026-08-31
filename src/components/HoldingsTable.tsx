@@ -22,7 +22,7 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
               <th className="text-left font-medium py-2.5 pr-3">Activo</th>
               <th className="text-right font-medium py-2.5 px-3">Cantidad</th>
               <th className="text-right font-medium py-2.5 px-3">Precio actual</th>
-              <th className="text-right font-medium py-2.5 px-3">Precio compra</th>
+              <th className="text-right font-medium py-2.5 px-3">Precio prom. compra</th>
               <th className="text-right font-medium py-2.5 px-3">Valor actual</th>
               <th className="text-right font-medium py-2.5 px-3">Valor compra</th>
               <th className="text-right font-medium py-2.5 px-3">Result.</th>
@@ -92,6 +92,9 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
               <span className={`font-mono ${h.variacion >= 0 ? "text-positive" : "text-negative"}`}>
                 {fmtPct(h.variacion)}
               </span>
+            </div>
+            <div className="text-text-faint text-xs mt-1 font-mono">
+              Precio promedio de compra: {fmtUsd(h.precioCompra, { decimals: 2 })}
             </div>
           </div>
         ))}

@@ -37,6 +37,20 @@ export type Operacion = {
   total: number;
 };
 
+export type VariacionHoy = {
+  simbolo: string;
+  empresa: string;
+  precioHoy: number | null;
+  precioAyer: number | null;
+  variacion: number | null; // fraction
+};
+
+export type VariacionesHoyData = {
+  updatedAt: string;
+  variaciones: VariacionHoy[];
+  warnings: string[];
+};
+
 export type PersonaResultado = {
   persona: string;
   valorInicio: number | null;

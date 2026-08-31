@@ -3,6 +3,8 @@ const SHEETS_API = "https://sheets.googleapis.com/v4/spreadsheets";
 // Wide ranges: comfortably covers the sheet even as Agus adds rows/columns.
 const RANGE_TOTAL_CUENTA = "Total cuenta!A1:Z250";
 const RANGE_OPERACIONES = "operaciones!A1:J200";
+// Sheet name has a space, needs single quotes in the A1 range notation.
+const RANGE_VAR_HOY = "'Var. Hoy'!A1:Z250";
 
 type SheetsValuesResponse = {
   values?: (string | number | null)[][];
@@ -35,10 +37,11 @@ export async function fetchSheetGrids() {
     );
   }
 
-  const [totalCuenta, operaciones] = await Promise.all([
+  const [totalCuenta, operaciones, varHoy] = await Promise.all([
     fetchRange(spreadsheetId, apiKey, RANGE_TOTAL_CUENTA),
     fetchRange(spreadsheetId, apiKey, RANGE_OPERACIONES),
+    fetchRange(spreadsheetId, apiKey, RANGE_VAR_HOY),
   ]);
 
-  return { totalCuenta, operaciones };
+  return { totalCuenta, operaciones, varHoy };
 }
