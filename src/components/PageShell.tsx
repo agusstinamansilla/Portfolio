@@ -6,7 +6,7 @@ import { fmtDateTime, fmtUsd } from "@/lib/format";
 import { NavTabs } from "./NavTabs";
 import { PortfolioData } from "@/lib/types";
 
-type Active = "resumen" | "posiciones" | "variaciones" | "operaciones";
+type Active = "resumen" | "posiciones" | "variaciones" | "noticias" | "sectorial" | "operaciones";
 
 export function PageShell({ active, children }: { active: Active; children: (data: PortfolioData) => ReactNode }) {
   const { data, error, loading } = usePortfolioData();

@@ -27,6 +27,28 @@ Se recomienda usar `GOOGLEFINANCE` en esas columnas (por ejemplo
 `=GOOGLEFINANCE(A5,"price")` y `=GOOGLEFINANCE(A5,"closeyest")`) para que
 se actualice sola.
 
+### La pestaña "Noticias"
+
+Trae noticias de Yahoo Finance (búsqueda por ticker, hasta 3 por símbolo)
+para cada acción y ETF que tengas en "Total cuenta". No necesita nada
+configurado en el Sheet — se arma sola a partir de los símbolos que ya
+tenés ahí. Se actualiza cada 30 minutos (las noticias no cambian tan
+rápido como los precios). Si algún símbolo no tiene cobertura de noticias
+en Yahoo (pasa con algunos ADRs menos conocidos), simplemente no aparece
+nada de ese símbolo — no rompe el resto.
+
+### La pestaña "Análisis Sectorial"
+
+Dos gráficos de torta (por industria y por región) más un índice de las
+empresas de la cartera con una descripción corta de cada una. No lee nada
+del Sheet más allá de qué posiciones tenés y su valor actual — el sector,
+la región y la descripción de cada empresa están en
+`src/lib/clasificacion.ts`, mantenidos a mano en el código (es información
+que casi no cambia, así que no tiene sentido pedírsela a una API cada
+minuto). **Si agregás una posición nueva que no está en esa tabla, va a
+aparecer como "Sin clasificar"** hasta que se agregue una entrada nueva ahí
+— avisame cuando sume una acción o ETF nuevo y la agrego.
+
 ## 1. Conseguir la API key de Google
 
 1. Andá a [Google Cloud Console](https://console.cloud.google.com/) y creá

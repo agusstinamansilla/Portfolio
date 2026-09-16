@@ -6,17 +6,19 @@ const TABS = [
   { href: "/", key: "resumen", label: "Resumen" },
   { href: "/posiciones", key: "posiciones", label: "Posiciones" },
   { href: "/variaciones-hoy", key: "variaciones", label: "Variaciones Hoy" },
+  { href: "/noticias", key: "noticias", label: "Noticias" },
+  { href: "/sectorial", key: "sectorial", label: "Análisis Sectorial" },
   { href: "/operaciones", key: "operaciones", label: "Operaciones" },
 ] as const;
 
 export function NavTabs({ active }: { active: (typeof TABS)[number]["key"] }) {
   return (
-    <nav className="flex gap-6 border-b border-hairline mb-10">
+    <nav className="flex gap-5 sm:gap-6 border-b border-hairline mb-10 overflow-x-auto whitespace-nowrap">
       {TABS.map((tab) => (
         <Link
           key={tab.key}
           href={tab.href}
-          className={`text-sm pb-3 -mb-px border-b transition-colors ${
+          className={`text-sm pb-3 -mb-px border-b transition-colors shrink-0 ${
             tab.key === active
               ? "border-accent text-text"
               : "border-transparent text-text-muted hover:text-text"

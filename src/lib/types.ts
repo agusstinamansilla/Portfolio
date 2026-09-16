@@ -51,6 +51,20 @@ export type VariacionesHoyData = {
   warnings: string[];
 };
 
+export type NoticiaItem = {
+  simbolo: string;
+  titulo: string;
+  fuente: string;
+  fecha: string; // ISO
+  url: string;
+};
+
+export type NoticiasData = {
+  updatedAt: string;
+  noticias: NoticiaItem[];
+  warnings: string[];
+};
+
 export type PersonaResultado = {
   persona: string;
   valorInicio: number | null;
