@@ -23,16 +23,11 @@ type YahooSearchResponse = {
  * quote matches when you search a ticker. No API key needed, but it's less
  * standardized than the price endpoint — coverage can be thin for less
  * widely-covered ADRs, and it can occasionally rate-limit.
- *
- * lang/region are set to Spanish (Argentina) to prefer Spanish-language
- * sources. Yahoo's Spanish coverage is real but thinner than English for
- * some large US tech names, so some tickers may still come back in English
- * or with fewer results — that's a source-coverage limit, not a bug here.
  */
-async function fetchYahooNewsForSymbol(symbol: string, limit: number): Promise<NoticiaItem[]> {
+async function fetchYahooSearch(symbol: string, lang: string, region: string) {
   const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(
     symbol
-  )}&newsCount=${limit}&quotesCount=0&lang=es-419&region=AR`;
+  )}&newsCount=8&quotesCount=0&lang=${lang}&region=${region}`;
 
   const res = await fetch(url, {
     headers: {
@@ -47,7 +42,20 @@ async function fetchYahooNewsForSymbol(symbol: string, limit: number): Promise<N
   }
 
   const data = (await res.json()) as YahooSearchResponse;
-  const items = data.news ?? [];
+  return data.news ?? [];
+}
+
+/**
+ * Tries Spanish (Argentina) first so headlines come back in Spanish when
+ * available. If that comes back empty — Yahoo's Spanish coverage is real
+ * but thinner than English for some large US tech names — falls back to
+ * English rather than showing nothing for that symbol.
+ */
+async function fetchYahooNewsForSymbol(symbol: string, limit: number): Promise<NoticiaItem[]> {
+  let items = await fetchYahooSearch(symbol, "es-419", "AR");
+  if (items.length === 0) {
+    items = await fetchYahooSearch(symbol, "en-US", "US");
+  }
 
   return items.slice(0, limit).map((n) => ({
     simbolo: symbol,

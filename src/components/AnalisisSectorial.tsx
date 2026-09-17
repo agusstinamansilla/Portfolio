@@ -21,7 +21,16 @@ export function AnalisisSectorial({ data }: { data: PortfolioData }) {
   );
 
   // De mayor a menor valor actual, para el índice de empresas de abajo.
-  const holdingsOrdenados = [...holdings].sort((a, b) => b.valorActual - a.valorActual);
+  // Un mismo símbolo puede tener más de una posición (p.ej. dos lotes de
+  // SPY) — en el índice se muestra una sola vez, no una fila por lote.
+  const vistos = new Set<string>();
+  const holdingsOrdenados = [...holdings]
+    .sort((a, b) => b.valorActual - a.valorActual)
+    .filter((h) => {
+      if (vistos.has(h.simbolo)) return false;
+      vistos.add(h.simbolo);
+      return true;
+    });
 
   return (
     <>
