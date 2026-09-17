@@ -33,6 +33,7 @@ async function fetchYahooSearch(symbol: string, lang: string, region: string) {
     headers: {
       "User-Agent": "Mozilla/5.0 (compatible; PortfolioDashboard/1.0)",
       Accept: "application/json",
+      "Accept-Language": lang === "es-419" ? "es-AR,es;q=0.9" : "en-US,en;q=0.9",
     },
     next: { revalidate: 1800 },
   });
