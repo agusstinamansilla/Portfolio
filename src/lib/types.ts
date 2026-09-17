@@ -53,6 +53,7 @@ export type VariacionesHoyData = {
 
 export type NoticiaItem = {
   simbolo: string;
+  empresa: string;
   titulo: string;
   fuente: string;
   fecha: string; // ISO

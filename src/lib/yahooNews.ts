@@ -1,5 +1,6 @@
 export type NoticiaItem = {
   simbolo: string;
+  empresa: string;
   titulo: string;
   fuente: string;
   fecha: string; // ISO
@@ -22,11 +23,16 @@ type YahooSearchResponse = {
  * quote matches when you search a ticker. No API key needed, but it's less
  * standardized than the price endpoint — coverage can be thin for less
  * widely-covered ADRs, and it can occasionally rate-limit.
+ *
+ * lang/region are set to Spanish (Argentina) to prefer Spanish-language
+ * sources. Yahoo's Spanish coverage is real but thinner than English for
+ * some large US tech names, so some tickers may still come back in English
+ * or with fewer results — that's a source-coverage limit, not a bug here.
  */
 async function fetchYahooNewsForSymbol(symbol: string, limit: number): Promise<NoticiaItem[]> {
   const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(
     symbol
-  )}&newsCount=${limit}&quotesCount=0&lang=en-US`;
+  )}&newsCount=${limit}&quotesCount=0&lang=es-419&region=AR`;
 
   const res = await fetch(url, {
     headers: {
@@ -45,6 +51,7 @@ async function fetchYahooNewsForSymbol(symbol: string, limit: number): Promise<N
 
   return items.slice(0, limit).map((n) => ({
     simbolo: symbol,
+    empresa: "", // filled in by the API route, which knows the company name from the Sheet
     titulo: n.title,
     fuente: n.publisher,
     fecha: new Date(n.providerPublishTime * 1000).toISOString(),

@@ -16,7 +16,12 @@ export async function GET() {
         : await fetchSheetGrids();
 
     const portfolio = buildPortfolioData(totalCuenta, operaciones);
-    const simbolos = [...portfolio.acciones, ...portfolio.etfs].map((h) => h.simbolo);
+    const holdings = [...portfolio.acciones, ...portfolio.etfs];
+    const simbolos = holdings.map((h) => h.simbolo);
+    const empresaPorSimbolo = new Map<string, string>();
+    for (const h of holdings) {
+      if (!empresaPorSimbolo.has(h.simbolo)) empresaPorSimbolo.set(h.simbolo, h.empresa);
+    }
 
     // USE_FIXTURES=1 fakes the Yahoo response too, since that endpoint isn't
     // reachable from every dev environment — real news needs a real deploy.
@@ -27,6 +32,7 @@ export async function GET() {
       noticias = unique.slice(0, 8).flatMap((simbolo, i) => [
         {
           simbolo,
+          empresa: "",
           titulo: `${simbolo} anuncia resultados por encima de lo esperado en el ultimo trimestre`,
           fuente: "Reuters",
           fecha: new Date(Date.now() - i * 3 * 3600_000).toISOString(),
@@ -34,6 +40,7 @@ export async function GET() {
         },
         {
           simbolo,
+          empresa: "",
           titulo: `Analistas revisan el precio objetivo de ${simbolo} tras la presentacion de resultados`,
           fuente: "Bloomberg",
           fecha: new Date(Date.now() - (i * 3 + 1) * 3600_000).toISOString(),
@@ -48,7 +55,9 @@ export async function GET() {
       warnings = result.errores;
     }
 
-    return NextResponse.json({ updatedAt: new Date().toISOString(), noticias, warnings });
+    const noticiasConEmpresa = noticias.map((n) => ({ ...n, empresa: empresaPorSimbolo.get(n.simbolo) ?? "" }));
+
+    return NextResponse.json({ updatedAt: new Date().toISOString(), noticias: noticiasConEmpresa, warnings });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Error desconocido";
     return NextResponse.json({ error: message }, { status: 500 });

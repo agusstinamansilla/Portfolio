@@ -5,10 +5,10 @@ import Link from "next/link";
 const TABS = [
   { href: "/", key: "resumen", label: "Resumen" },
   { href: "/posiciones", key: "posiciones", label: "Posiciones" },
+  { href: "/operaciones", key: "operaciones", label: "Operaciones" },
   { href: "/variaciones-hoy", key: "variaciones", label: "Variaciones Hoy" },
   { href: "/noticias", key: "noticias", label: "Noticias" },
   { href: "/sectorial", key: "sectorial", label: "Análisis Sectorial" },
-  { href: "/operaciones", key: "operaciones", label: "Operaciones" },
 ] as const;
 
 export function NavTabs({ active }: { active: (typeof TABS)[number]["key"] }) {

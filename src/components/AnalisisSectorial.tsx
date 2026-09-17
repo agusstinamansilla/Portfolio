@@ -1,5 +1,5 @@
 import { PortfolioData } from "@/lib/types";
-import { getClasificacion } from "@/lib/clasificacion";
+import { getClasificacion, getSectorAmplio } from "@/lib/clasificacion";
 import { DonutChart, DonutSlice } from "./DonutChart";
 
 function aggregate(items: { key: string; value: number }[]): DonutSlice[] {
@@ -14,7 +14,7 @@ export function AnalisisSectorial({ data }: { data: PortfolioData }) {
   const holdings = [...data.acciones, ...data.etfs];
 
   const porSector = aggregate(
-    holdings.map((h) => ({ key: getClasificacion(h.simbolo).sector, value: h.valorActual }))
+    holdings.map((h) => ({ key: getSectorAmplio(getClasificacion(h.simbolo).sector), value: h.valorActual }))
   );
   const porRegion = aggregate(
     holdings.map((h) => ({ key: getClasificacion(h.simbolo).region, value: h.valorActual }))

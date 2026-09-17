@@ -2,6 +2,23 @@
 
 import { useNoticias } from "@/lib/useNoticias";
 import { fmtDateTime } from "@/lib/format";
+import { NoticiaItem } from "@/lib/types";
+
+function agruparPorEmpresa(noticias: NoticiaItem[]) {
+  const map = new Map<string, NoticiaItem[]>();
+  for (const n of noticias) {
+    const arr = map.get(n.simbolo) ?? [];
+    arr.push(n);
+    map.set(n.simbolo, arr);
+  }
+  return Array.from(map.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([simbolo, items]) => ({
+      simbolo,
+      empresa: items[0]?.empresa ?? "",
+      items: [...items].sort((x, y) => new Date(y.fecha).getTime() - new Date(x.fecha).getTime()),
+    }));
+}
 
 export function NoticiasList() {
   const { data, error, loading } = useNoticias();
@@ -26,6 +43,8 @@ export function NoticiasList() {
 
   if (!data) return null;
 
+  const grupos = agruparPorEmpresa(data.noticias);
+
   return (
     <section className="mb-14 fade-in">
       <div className="flex items-baseline justify-between border-b border-hairline pb-3 mb-1">
@@ -33,29 +52,37 @@ export function NoticiasList() {
         <span className="text-xs text-text-faint font-mono hidden sm:inline">{fmtDateTime(data.updatedAt)}</span>
       </div>
 
-      {data.noticias.length === 0 ? (
+      {grupos.length === 0 ? (
         <p className="text-text-faint text-sm py-6">No hay noticias disponibles por el momento.</p>
       ) : (
-        <div className="divide-y divide-hairline-soft">
-          {data.noticias.map((n, i) => (
-            <a
-              key={`${n.url}-${i}`}
-              href={n.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block py-4 group"
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="font-mono text-accent-bright text-xs">{n.simbolo}</span>
-                <span className="text-text-faint text-xs">·</span>
-                <span className="text-text-faint text-xs">{n.fuente}</span>
-                <span className="text-text-faint text-xs">·</span>
-                <span className="text-text-faint text-xs font-mono">{fmtDateTime(n.fecha)}</span>
+        <div className="divide-y divide-hairline">
+          {grupos.map((grupo) => (
+            <div key={grupo.simbolo} className="py-5">
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className="font-mono text-accent-bright text-sm">{grupo.simbolo}</span>
+                {grupo.empresa && <span className="text-text text-sm font-medium">{grupo.empresa}</span>}
               </div>
-              <div className="text-sm text-text group-hover:text-accent-bright transition-colors leading-snug">
-                {n.titulo}
+              <div className="space-y-3 pl-1">
+                {grupo.items.map((n, i) => (
+                  <a
+                    key={`${n.url}-${i}`}
+                    href={n.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group"
+                  >
+                    <div className="text-sm text-text group-hover:text-accent-bright transition-colors leading-snug">
+                      {n.titulo}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-text-faint text-xs">{n.fuente}</span>
+                      <span className="text-text-faint text-xs">·</span>
+                      <span className="text-text-faint text-xs font-mono">{fmtDateTime(n.fecha)}</span>
+                    </div>
+                  </a>
+                ))}
               </div>
-            </a>
+            </div>
           ))}
         </div>
       )}

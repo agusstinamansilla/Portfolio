@@ -11,6 +11,20 @@ const SIN_CLASIFICAR: Clasificacion = {
 };
 
 /**
+ * Broad bucket for the "por industria" donut chart — groups the more
+ * specific `sector` labels (used in the company index below) into a
+ * handful of categories, since a chart with 15 tiny slices isn't useful.
+ */
+export function getSectorAmplio(sector: string): string {
+  if (sector.startsWith("Tecnología")) return "Tecnología";
+  if (sector.startsWith("Energía")) return "Energía";
+  if (sector.startsWith("Consumo")) return "Consumo";
+  if (sector.startsWith("Financiero")) return "Financiero";
+  if (sector.startsWith("ETF") || sector.startsWith("Materias primas")) return "ETFs";
+  return "Otros";
+}
+
+/**
  * Sector, region and a short description per symbol. This is reference data
  * that barely changes (a company's industry doesn't shift week to week), so
  * it's maintained here in code rather than fetched live — one less external
