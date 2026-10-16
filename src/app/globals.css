@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #0c0e11;
-  --surface: #14171c;
-  --surface-2: #191d23;
-  --hairline: #262b33;
-  --hairline-soft: #1d2128;
-  --text: #eae6dd;
-  --text-muted: #8b8f98;
-  --text-faint: #565b64;
-  --accent: #c6a15c;
-  --accent-bright: #e6c584;
-  --positive: #7fa98d;
-  --negative: #c17b6e;
+  --bg: #ffffff;
+  --surface: #f6f7f9;
+  --surface-2: #eef0f3;
+  --hairline: #dfe2e7;
+  --hairline-soft: #eceef2;
+  --text: #14171c;
+  --text-muted: #5b616b;
+  --text-faint: #8d929b;
+  --accent: #8a6a24;
+  --accent-bright: #a07a22;
+  --positive: #2f7d4f;
+  --negative: #b5483a;
 
   --font-display: "Fraunces", serif;
   --font-body: "Inter", sans-serif;
@@ -40,10 +40,6 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-  background-image:
-    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(198, 161, 92, 0.07), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(198, 161, 92, 0.04), transparent 55%);
-  background-attachment: fixed;
 }
 
 .tabular {
@@ -51,7 +47,7 @@ body {
 }
 
 ::selection {
-  background: rgba(198, 161, 92, 0.28);
+  background: rgba(160, 122, 34, 0.2);
   color: var(--text);
 }
 

@@ -7,7 +7,7 @@ export type DonutSlice = {
 
 // Muted, warm palette that stays consistent with the site's brass/sage/brick
 // theme instead of default chart-library colors.
-const PALETTE = ["#c6a15c", "#7fa98d", "#c17b6e", "#7c93b3", "#a68bc0", "#b8b46a", "#d68a5f", "#8f8f97"];
+const PALETTE = ["#a07a22", "#2f7d4f", "#b5483a", "#4a6fa5", "#7b5ea7", "#8a8a2e", "#c0692f", "#6b7280"];
 
 export function DonutChart({ slices, size = 200 }: { slices: DonutSlice[]; size?: number }) {
   const total = slices.reduce((s, x) => s + x.value, 0);
