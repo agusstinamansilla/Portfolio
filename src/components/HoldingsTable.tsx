@@ -16,23 +16,23 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
 
       {/* Desktop table */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-[0.925rem]">
+        <table className="zebra w-full text-[0.82rem]">
           <thead>
             <tr className="text-text-faint text-[0.7rem] uppercase tracking-[0.12em]">
               <th className="text-left font-medium py-2.5 pr-3">Activo</th>
-              <th className="text-right font-medium py-2.5 px-3">Cantidad</th>
-              <th className="text-right font-medium py-2.5 px-3">Precio actual</th>
-              <th className="text-right font-medium py-2.5 px-3">Precio prom. compra</th>
-              <th className="text-right font-medium py-2.5 px-3">Valor actual</th>
-              <th className="text-right font-medium py-2.5 px-3">Valor compra</th>
-              <th className="text-right font-medium py-2.5 px-3">Result.</th>
-              <th className="text-right font-medium py-2.5 px-3">Var.</th>
+              <th className="text-right font-medium py-2.5 px-1.5">Cantidad</th>
+              <th className="text-right font-medium py-2.5 px-1.5">Precio actual</th>
+              <th className="text-right font-medium py-2.5 px-1.5">Precio prom. compra</th>
+              <th className="text-right font-medium py-2.5 px-1.5">Valor actual</th>
+              <th className="text-right font-medium py-2.5 px-1.5">Valor compra</th>
+              <th className="text-right font-medium py-2.5 px-1.5">Result.</th>
+              <th className="text-right font-medium py-2.5 px-1.5">Var.</th>
               <th className="text-right font-medium py-2.5 pl-3">% cartera</th>
             </tr>
           </thead>
           <tbody>
             {holdings.map((h, i) => (
-              <tr key={`${h.simbolo}-${i}`} className="border-t border-hairline-soft hover:bg-surface/60 transition-colors">
+              <tr key={`${h.simbolo}-${i}`} className="border-t border-hairline-soft">
                 <td className="py-3 pr-3">
                   <div className="flex items-baseline gap-2">
                     <span className="font-mono text-accent-bright text-[0.8rem]">{h.simbolo}</span>
@@ -44,16 +44,16 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
                   </div>
                   <div className="text-text-muted text-xs mt-0.5">{h.empresa}</div>
                 </td>
-                <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtNum(h.cantidad, h.cantidad % 1 ? 2 : 0)}</td>
-                <td className="text-right py-3 px-3 font-mono tabular">{fmtUsd(h.precioActual, { decimals: 2 })}</td>
-                <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtUsd(h.precioCompra, { decimals: 2 })}</td>
-                <td className="text-right py-3 px-3 font-mono tabular font-medium text-base">{fmtUsd(h.valorActual)}</td>
-                <td className="text-right py-3 px-3 font-mono tabular text-text-muted">{fmtUsd(h.valorCompra)}</td>
-                <td className={`text-right py-3 px-3 font-mono tabular font-medium text-base ${h.ganancia >= 0 ? "text-positive" : "text-negative"}`}>
+                <td className="text-right py-3 px-1.5 font-mono tabular text-text-muted">{fmtNum(h.cantidad, h.cantidad % 1 ? 2 : 0)}</td>
+                <td className="text-right py-3 px-1.5 font-mono tabular">{fmtUsd(h.precioActual, { decimals: 2 })}</td>
+                <td className="text-right py-3 px-1.5 font-mono tabular text-text-muted">{fmtUsd(h.precioCompra, { decimals: 2 })}</td>
+                <td className="text-right py-3 px-1.5 font-mono tabular font-medium text-base">{fmtUsd(h.valorActual)}</td>
+                <td className="text-right py-3 px-1.5 font-mono tabular text-text-muted">{fmtUsd(h.valorCompra)}</td>
+                <td className={`text-right py-3 px-1.5 font-mono tabular font-medium text-base ${h.ganancia >= 0 ? "text-positive" : "text-negative"}`}>
                   {h.ganancia >= 0 ? "+" : ""}
                   {fmtUsd(h.ganancia)}
                 </td>
-                <td className={`text-right py-3 px-3 font-mono tabular ${h.variacion >= 0 ? "text-positive" : "text-negative"}`}>
+                <td className={`text-right py-3 px-1.5 font-mono tabular ${h.variacion >= 0 ? "text-positive" : "text-negative"}`}>
                   {fmtPct(h.variacion)}
                 </td>
                 <td className="text-right py-3 pl-3 font-mono tabular text-text-muted">{fmtPct(h.pctCartera, 1)}</td>
@@ -64,9 +64,9 @@ export function HoldingsTable({ title, subtitle, holdings }: { title: string; su
             <tr className="border-t border-accent/25">
               <td className="py-3 pr-3 text-xs uppercase tracking-[0.12em] text-text-faint">Subtotal</td>
               <td colSpan={3}></td>
-              <td className="text-right py-3 px-3 font-mono tabular font-medium">{fmtUsd(totalValor)}</td>
+              <td className="text-right py-3 px-1.5 font-mono tabular font-medium">{fmtUsd(totalValor)}</td>
               <td></td>
-              <td className={`text-right py-3 px-3 font-mono tabular font-medium ${totalGanancia >= 0 ? "text-positive" : "text-negative"}`}>
+              <td className={`text-right py-3 px-1.5 font-mono tabular font-medium ${totalGanancia >= 0 ? "text-positive" : "text-negative"}`}>
                 {totalGanancia >= 0 ? "+" : ""}
                 {fmtUsd(totalGanancia)}
               </td>

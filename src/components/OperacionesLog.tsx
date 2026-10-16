@@ -10,7 +10,7 @@ export function OperacionesLog({ operaciones }: { operaciones: Operacion[] }) {
         <h2 className="font-display text-[1.4rem] tracking-tight text-text">Operaciones</h2>
         <span className="text-xs text-text-faint uppercase tracking-[0.14em]">últimos {operaciones.length}</span>
       </div>
-      <div className="divide-y divide-hairline-soft">
+      <div className="zebra-list mt-3">
         {operaciones.map((op, i) => {
           const isCompra = op.tipo.trim().toUpperCase().startsWith("COMPRA");
           return (

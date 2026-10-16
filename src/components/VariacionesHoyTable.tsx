@@ -33,7 +33,7 @@ export function VariacionesHoyTable() {
         <span className="text-xs text-text-faint font-mono hidden sm:inline">{fmtDateTime(data.updatedAt)}</span>
       </div>
 
-      <div className="divide-y divide-hairline-soft">
+      <div className="zebra-list mt-3">
         {data.variaciones.map((v, i) => (
           <div key={`${v.simbolo}-${i}`} className="flex items-center justify-between py-3.5 text-sm">
             <div>

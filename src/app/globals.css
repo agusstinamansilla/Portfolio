@@ -24,6 +24,7 @@
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-hairline: var(--hairline);
+  --color-hairline-soft: var(--hairline-soft);
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
   --color-text-faint: var(--text-faint);
@@ -67,3 +68,14 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Filas alternadas (una gris clarito, una blanca) */
+.zebra tbody tr:nth-child(odd) { background: var(--surface); }
+.zebra tbody tr { border-top-color: transparent; }
+.zebra th:first-child, .zebra td:first-child { padding-left: 1rem; }
+.zebra th:last-child, .zebra td:last-child { padding-right: 1rem; }
+.zebra-list { border: 1px solid var(--hairline); border-radius: 0.5rem; overflow: hidden; }
+.zebra-list > div { padding-left: 1rem; padding-right: 1rem; }
+.zebra-list > div:nth-child(odd) { background: var(--surface); }
+.zebra-list.divide-y > :not(:last-child) { border-color: transparent; }
+.zebra td:not(:first-child) { white-space: nowrap; }
