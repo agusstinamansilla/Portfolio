@@ -33,22 +33,24 @@ export function VariacionesHoyTable() {
         <span className="text-xs text-text-faint font-mono hidden sm:inline">{fmtDateTime(data.updatedAt)}</span>
       </div>
 
-      <div className="zebra-list mt-3">
+      <div className="zebra-list mt-3 max-w-xl">
         {data.variaciones.map((v, i) => (
-          <div key={`${v.simbolo}-${i}`} className="flex items-center justify-between py-3.5 text-sm">
-            <div>
+          <div key={`${v.simbolo}-${i}`} className="grid grid-cols-[minmax(0,1fr)_auto_4.5rem] items-center gap-x-5 py-3 text-sm">
+            <div className="min-w-0">
               <span className="font-mono text-accent-bright text-base">{v.simbolo}</span>
-              {v.empresa && <div className="text-text-muted text-xs mt-0.5">{v.empresa}</div>}
+              {v.empresa && <div className="text-text-muted text-xs mt-0.5 truncate">{v.empresa}</div>}
             </div>
             {v.precioHoy === null ? (
-              <span className="text-text-faint text-xs">Sin datos</span>
+              <span className="text-text-faint text-xs col-span-2 text-right">Sin datos</span>
             ) : (
-              <div className="text-right">
-                <div className="font-mono tabular text-base font-medium">{fmtUsd(v.precioHoy, { decimals: 2 })}</div>
-                <div className={`font-mono tabular text-sm ${(v.variacion ?? 0) >= 0 ? "text-positive" : "text-negative"}`}>
+              <>
+                <div className="font-mono tabular text-base font-medium text-right whitespace-nowrap">
+                  {fmtUsd(v.precioHoy, { decimals: 2 })}
+                </div>
+                <div className={`font-mono tabular text-sm text-right whitespace-nowrap ${(v.variacion ?? 0) >= 0 ? "text-positive" : "text-negative"}`}>
                   {fmtPct(v.variacion, 2)}
                 </div>
-              </div>
+              </>
             )}
           </div>
         ))}

@@ -1,8 +1,10 @@
 import { Holding } from "@/lib/types";
 import { fmtNum, fmtPct, fmtUsd } from "@/lib/format";
 
-export function HoldingsTable({ title, subtitle, holdings }: { title: string; subtitle?: string; holdings: Holding[] }) {
-  if (holdings.length === 0) return null;
+export function HoldingsTable({ title, subtitle, holdings: holdingsIn }: { title: string; subtitle?: string; holdings: Holding[] }) {
+  if (holdingsIn.length === 0) return null;
+  // De mayor a menor valor actual
+  const holdings = [...holdingsIn].sort((a, b) => b.valorActual - a.valorActual);
 
   const totalValor = holdings.reduce((s, h) => s + h.valorActual, 0);
   const totalGanancia = holdings.reduce((s, h) => s + h.ganancia, 0);
