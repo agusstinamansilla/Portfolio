@@ -37,7 +37,7 @@ export function VariacionesHoyTable() {
         {data.variaciones.map((v, i) => (
           <div key={`${v.simbolo}-${i}`} className="grid grid-cols-[minmax(0,1fr)_auto_4.5rem] items-center gap-x-5 py-3 text-sm">
             <div className="min-w-0">
-              <span className="font-mono text-accent-bright text-base">{v.simbolo}</span>
+              <span className="font-mono font-bold text-ticker text-lg">{v.simbolo}</span>
               {v.empresa && <div className="text-text-muted text-xs mt-0.5 truncate">{v.empresa}</div>}
             </div>
             {v.precioHoy === null ? (

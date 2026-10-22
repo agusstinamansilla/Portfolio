@@ -58,7 +58,7 @@ export function AnalisisSectorial({ data }: { data: PortfolioData }) {
             return (
               <div key={`${h.simbolo}-${i}`} className="py-5">
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="font-mono text-accent-bright text-sm">{h.simbolo}</span>
+                  <span className="font-mono font-bold text-ticker text-base">{h.simbolo}</span>
                   <span className="text-text text-sm font-medium">{h.empresa}</span>
                 </div>
                 <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-faint mb-2">

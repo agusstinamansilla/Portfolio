@@ -17,13 +17,13 @@ export function OperacionesLog({ operaciones }: { operaciones: Operacion[] }) {
             <div key={i} className="flex items-center justify-between py-3 text-sm">
               <div className="flex items-center gap-3">
                 <span
-                  className={`text-[0.65rem] uppercase tracking-[0.1em] px-2 py-1 rounded-sm border ${
+                  className={`min-w-[5.25rem] text-center text-[0.75rem] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-sm border ${
                     isCompra ? "text-positive border-positive/30 bg-positive/5" : "text-negative border-negative/30 bg-negative/5"
                   }`}
                 >
                   {isCompra ? "Compra" : "Venta"}
                 </span>
-                <span className="font-mono text-accent-bright">{op.accion.trim()}</span>
+                <span className="font-mono font-bold text-ticker text-lg">{op.accion.trim()}</span>
                 <span className="text-text-faint text-xs hidden sm:inline">{fmtDate(op.fecha)}</span>
               </div>
               <div className="text-right">

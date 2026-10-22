@@ -59,7 +59,7 @@ export function NoticiasList() {
           {grupos.map((grupo) => (
             <div key={grupo.simbolo} className="py-5">
               <div className="flex items-baseline gap-2 mb-3">
-                <span className="font-mono text-accent-bright text-sm">{grupo.simbolo}</span>
+                <span className="font-mono font-bold text-ticker text-base">{grupo.simbolo}</span>
                 {grupo.empresa && <span className="text-text text-sm font-medium">{grupo.empresa}</span>}
               </div>
               <div className="space-y-3 pl-1">

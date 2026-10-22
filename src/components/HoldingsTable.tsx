@@ -37,7 +37,7 @@ export function HoldingsTable({ title, subtitle, holdings: holdingsIn }: { title
               <tr key={`${h.simbolo}-${i}`} className="border-t border-hairline-soft">
                 <td className="py-3 pr-3">
                   <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-accent-bright text-[0.8rem]">{h.simbolo}</span>
+                    <span className="font-mono font-bold text-ticker text-[1rem]">{h.simbolo}</span>
                     {h.comentario && (
                       <span className="text-[0.65rem] text-text-faint border border-hairline rounded-full px-1.5 py-0.5">
                         {h.comentario}
@@ -83,7 +83,7 @@ export function HoldingsTable({ title, subtitle, holdings: holdingsIn }: { title
         {holdings.map((h, i) => (
           <div key={`${h.simbolo}-${i}`} className="py-3">
             <div className="flex items-baseline justify-between">
-              <span className="font-mono text-accent-bright text-base">{h.simbolo}</span>
+              <span className="font-mono font-bold text-ticker text-lg">{h.simbolo}</span>
               <span className="font-mono tabular font-medium text-base">{fmtUsd(h.valorActual)}</span>
             </div>
             <div className="text-text-muted text-xs mt-0.5">{h.empresa}</div>
