@@ -13,7 +13,7 @@ export function PageShell({ active, children }: { active: Active; children: (dat
 
   return (
     <main className="min-h-screen">
-      <div className="max-w-[1080px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
+      <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <Masthead updatedAt={data?.updatedAt} total={data?.resumen.total ?? null} />
         <NavTabs active={active} />
 
